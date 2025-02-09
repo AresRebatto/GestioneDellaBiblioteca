@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferma Dati del Libro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Conferma i dati del libro</h2>
+
+        <form action="#" method="POST" class="space-y-4">
+            <!-- Copertina -->
+            <div class="flex items-center space-x-4">
+                <img src="https://via.placeholder.com/80" alt="Copertina libro" class="w-20 h-28 object-cover rounded-md shadow-md">
+                <div>
+                    <p class="text-sm text-gray-500">ISBN: <span class="font-semibold">978-1234567890</span></p>
+                </div>
+            </div>
+
+            <!-- Titolo -->
+            <div>
+                <label class="block text-gray-700 font-medium">Titolo</label>
+                <input type="text" name="title" value="Titolo precompilato" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Autore -->
+            <div>
+                <label class="block text-gray-700 font-medium">Autore</label>
+                <input type="text" name="author" value="Autore precompilato" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Genere -->
+            <div>
+                <label class="block text-gray-700 font-medium">Genere</label>
+                <input type="text" name="genre" value="Genere precompilato" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Anno di pubblicazione -->
+            <div>
+                <label class="block text-gray-700 font-medium">Anno di pubblicazione</label>
+                <input type="number" name="year" value="2023" required min="1000" max="9999"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Sede -->
+            <div>
+                <label class="block text-gray-700 font-medium">Sede</label>
+                <input type="text" name="location" value="Biblioteca Centrale" required
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Pulsanti -->
+            <div class="flex justify-between">
+                <button type="button" 
+                    class="px-4 py-2 bg-gray-500 text-white font-medium rounded-md hover:bg-gray-600 transition">
+                    Modifica
+                </button>
+                <button type="submit" 
+                    class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
+                    Conferma
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

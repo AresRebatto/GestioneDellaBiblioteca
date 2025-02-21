@@ -11,7 +11,7 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Inserisci Manualmente il Libro</h2>
 
-        <form action="#" method="POST" class="space-y-4">
+        <form action="insert_book.php" method="POST" enctype="multipart/form-data" class="space-y-4">
             <!-- Titolo -->
             <div>
                 <label class="block text-gray-700 font-medium">Titolo</label>

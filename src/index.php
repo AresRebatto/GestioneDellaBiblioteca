@@ -40,24 +40,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-center">
-                    <td class="p-2 border">Il Nome della Rosa</td>
-                    <td class="p-2 border">Umberto Eco</td>
-                    <td class="p-2 border">Romanzo</td>
-                    <td class="p-2 border text-green-600">Disponibile</td>
-                    <td class="p-2 border">
-                        <button class="bg-green-500 text-white px-3 py-1 rounded">📖 Prenota</button>
-                    </td>
-                </tr>
-                <tr class="text-center bg-gray-100">
-                    <td class="p-2 border">1984</td>
-                    <td class="p-2 border">George Orwell</td>
-                    <td class="p-2 border">Distopico</td>
-                    <td class="p-2 border text-red-600">In prestito</td>
-                    <td class="p-2 border">
-                        <button class="bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed" disabled>⏳ In attesa</button>
-                    </td>
-                </tr>
+                <?php include 'get_libri.php'; ?> <!-- Inclusione dati -->
             </tbody>
         </table>
 

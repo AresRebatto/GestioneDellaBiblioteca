@@ -15,15 +15,71 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 
 def extract_isbn(image: np.ndarray) -> str:
     try:
+        # Converti l'immagine in scala di grigi
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        isbn_text = re.sub(r'\s+|ISBN', '', pytesseract.image_to_string(gray, config="--psm 6"), flags=re.IGNORECASE)
         
-        print("Testo estratto:", isbn_text)  # 👈 Aggiunto per debug
+        # Binarizzazione semplice dato l'alto contrasto
+        _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+        
+        # Trova i bordi con Canny
+        edges = cv2.Canny(thresh, 50, 150, apertureSize=3)
+        
+        # Trova linee con trasformata di Hough per identificare il rettangolo
+        lines = cv2.HoughLinesP(edges, 1, np.pi/180, 100, minLineLength=100, maxLineGap=10)
+        
+        if lines is not None:
+            # Trova i limiti del rettangolo
+            min_x = float('inf')
+            min_y = float('inf')
+            max_x = 0
+            max_y = 0
+            
+            for line in lines:
+                x1, y1, x2, y2 = line[0]
+                min_x = min(min_x, x1, x2)
+                min_y = min(min_y, y1, y2)
+                max_x = max(max_x, x1, x2)
+                max_y = max(max_y, y1, y2)
+            
+            # Aggiungi un piccolo padding
+            padding = 5
+            min_x = max(0, int(min_x) - padding)
+            min_y = max(0, int(min_y) - padding)
+            max_x = min(gray.shape[1], int(max_x) + padding)
+            max_y = min(gray.shape[0], int(max_y) + padding)
+            
+            # Ritaglia l'area dell'ISBN
+            isbn_region = gray[min_y:max_y, min_x:max_x]
+            
+            # Migliora il contrasto dell'area ritagliata
+            isbn_region = cv2.normalize(isbn_region, None, 0, 255, cv2.NORM_MINMAX)
+            
+            # Applica threshold di Otsu sulla regione ritagliata
+            _, isbn_region = cv2.threshold(isbn_region, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-        isbn = ''.join(filter(str.isdigit, isbn_text))  # Estrai solo cifre
-        return isbn #if len(isbn) in [10, 20] else None
-    except TesseractError as e:
-        print("Errore OCR:", e)
+
+
+
+            #Il problema sono le righe che seguonio
+            # Configurazione Tesseract ottimizzata per ISBN
+            custom_config = '--psm 7 --oem 3'
+            extracted_text = pytesseract.image_to_string(isbn_region, config=custom_config)
+            print(extracted_text)
+            # Pulizia e validazione
+            isbn_text = re.sub(r'[^\d]', '', extracted_text)
+            
+            # Debug: stampa il testo estratto prima della pulizia
+            print(f"Testo estratto: {extracted_text}")
+            print(f"ISBN pulito: {isbn_text}")
+            
+            if len(isbn_text) in [10, 13]:
+                return isbn_text
+        else:
+            print("Nessun rettangolo valido trovato")
+            return None
+        
+    except Exception as e:
+        print(f"Errore durante l'elaborazione: {str(e)}")
         return None
 
 def get_book_info(isbn: str):

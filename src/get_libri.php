@@ -27,6 +27,7 @@ $sql = "SELECT * FROM Libro";
                     <td class='p-2 border'>{$row["Titolo"]}</td>
                     <td class='p-2 border'>{$row["Autore"]}</td>
                     <td class='p-2 border'>{$row["Genere"]}</td>
+                    <td class='p-2 border'>{$row["Sede"]}</td>
                     <td class='p-2 border $statoClasse'>{$row["Stato"]}</td>
                     <td class='p-2 border'>$button</td>
                 </tr>

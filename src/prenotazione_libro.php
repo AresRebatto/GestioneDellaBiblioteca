@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Aggiorna lo stato del libro a "Non disponibile"
     $updateSql = "UPDATE Libro SET Stato = 'Non disponibile' WHERE LibroId = $bookId";
     if ($conn->query($updateSql) === TRUE) {
-        echo "<script>alert('Prenotazione confermata!'); window.location.href='index.php';</script>";
+        header("Location: index.php");
     } else {
         echo "Errore nell'aggiornamento dello stato: " . $conn->error;
     }

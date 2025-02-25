@@ -14,7 +14,7 @@
     <nav class="bg-blue-600 p-4 text-white">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center">
-                <h1 class="text-xl font-bold">📚 Biblioteca</h1>
+                <h1 class="text-xl font-bold">📚 Biblioteca ITTS Rimini "O. Belluzi - L. Da Vinci</h1>
             </div>
             <a href="#" class="hover:underline">Login</a>
         </div>
@@ -33,7 +33,7 @@
             <input type="text" name="query" placeholder="Cerca un libro..."
                 class="w-full h-15 px-2 py-1 border rounded-md text-sm" required>
             <button type="submit"
-                class="ml-2 h-10 bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700">
+                class="ml-2 h-15 bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700">
                 🔍 Cerca
             </button>
         </form>
@@ -59,7 +59,7 @@
 
         <div class="flex justify-between items-center mb-4 mt-4">
             <a href="inserimento_manuale.php"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700"">
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
                 ➕ Aggiungi Libro
             </a>
         </div>

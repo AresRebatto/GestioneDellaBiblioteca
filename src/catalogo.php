@@ -55,9 +55,10 @@ if (isset($_GET['query'])) {
             <h2 class="text-2xl font-semibold">Catalogo Libri</h2>
             <form action="catalogo.php" method="GET" class="flex">
                 <input type="text" name="query" placeholder="Cerca un libro..."
-                    class="w-full h-12 px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                    class="w-full h-12 px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    required>
                 <button type="submit"
-                    class="ml-2 h-12 bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+                    class="ml-2 h-15 bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
                     🔍 Cerca
                 </button>
             </form>
@@ -73,6 +74,7 @@ if (isset($_GET['query'])) {
                             <th class='p-3 border text-left'>Titolo</th>
                             <th class='p-3 border text-left'>Autore</th>
                             <th class='p-3 border text-left'>Sede</th>
+                            <th class='p-3 border text-left'>Stato</th>
                             <th class='p-3 border text-left'>Azione</th>
                         </tr>
                     </thead>
@@ -80,14 +82,16 @@ if (isset($_GET['query'])) {
 
                 // Cicla attraverso i risultati e crea le righe della tabella
                 while ($row = $result->fetch_assoc()) {
+                    $statoClasse = ($row["Stato"] == "Disponibile") ? "text-green-600" : "text-red-600";
+                    $button = ($row["Stato"] == "Disponibile")
+                        ? "<a href='prenotazione_libro.php?id={$row["LibroId"]}' class='bg-green-500 text-white px-3 py-1 rounded'>📖 Prenota</a>"
+                        : "<button class='bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed' disabled>⏳ In attesa</button>";
                     echo "<tr class='border-b hover:bg-gray-100'>
                             <td class='p-3'>" . htmlspecialchars($row["Titolo"]) . "</td>
                             <td class='p-3'>" . htmlspecialchars($row["Autore"]) . "</td>
                             <td class='p-3'>" . htmlspecialchars($row["Sede"]) . "</td>
-
-                            <td class='p-3'>
-                                <a href='#' class='text-blue-600 hover:text-blue-800'>Dettagli</a>
-                            </td>
+                            <td class='p-3'>" . htmlspecialchars($row["Stato"]) . "</td>
+                            <td class='p-2 border'>$button</td>
                           </tr>";
                 }
 
@@ -103,6 +107,10 @@ if (isset($_GET['query'])) {
                 class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
                 ➕ Aggiungi Libro
             </a>
+            <button type="button" onclick="window.location.href='index.php'"
+                class="px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 transition">
+                🏠 Home
+            </button>
         </div>
     </div>
 

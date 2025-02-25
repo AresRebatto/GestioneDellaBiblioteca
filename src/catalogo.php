@@ -16,7 +16,18 @@ if (isset($_GET['query'])) {
     $query = trim($_GET['query']);
 
     // Query di ricerca con sicurezza SQL (evita SQL Injection)
-    $sql = "SELECT * FROM libro WHERE Titolo LIKE ?";
+    $sql = "SELECT 
+    l.LibroId,
+    l.Titolo,
+    GROUP_CONCAT(CONCAT(a.Nome, ' ', a.Cognome) SEPARATOR ', ') AS Autori,
+    l.Genere,
+    l.Sede,
+    l.Stato
+FROM libro l
+JOIN libro_autore la ON l.LibroId = la.LibroId
+JOIN autore a ON la.AutoreId = a.AutoreId
+WHERE l.Titolo LIKE ?
+GROUP BY l.LibroId, l.Titolo, l.Genere, l.Sede, l.Stato;";
     $stmt = $conn->prepare($sql);
     $search = "%$query%";
     $stmt->bind_param("s", $search);
@@ -43,7 +54,7 @@ if (isset($_GET['query'])) {
             <div class="flex items-center">
                 <h1 class="text-xl font-bold">📚 Biblioteca</h1>
             </div>
-            <a href="#" class="hover:underline">Login</a>
+            <a href="loginform.php" class="hover:underline">Login</a>
         </div>
     </nav>
 
@@ -88,7 +99,7 @@ if (isset($_GET['query'])) {
                         : "<button class='bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed' disabled>⏳ In attesa</button>";
                     echo "<tr class='border-b hover:bg-gray-100'>
                             <td class='p-3'>" . htmlspecialchars($row["Titolo"]) . "</td>
-                            <td class='p-3'>" . htmlspecialchars($row["Autore"]) . "</td>
+                            <td class='p-3'>" . htmlspecialchars($row["Autori"]) . "</td>
                             <td class='p-3'>" . htmlspecialchars($row["Sede"]) . "</td>
                             <td class='p-3'>" . htmlspecialchars($row["Stato"]) . "</td>
                             <td class='p-2 border'>$button</td>

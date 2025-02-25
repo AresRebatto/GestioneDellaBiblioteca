@@ -16,7 +16,7 @@
             <div class="flex items-center">
                 <h1 class="text-xl font-bold">📚 Biblioteca ITTS Rimini "O. Belluzi - L. Da Vinci</h1>
             </div>
-            <a href="#" class="hover:underline">Login</a>
+            <a href="loginform.php" class="hover:underline">Login</a>
         </div>
     </nav>
 

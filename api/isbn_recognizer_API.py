@@ -2,16 +2,15 @@ from flask import Flask, request, jsonify
 import cv2
 import numpy as np
 import requests
-import pytesseract 
-from pytesseract import TesseractError, image_to_string
+from pyzbar.pyzbar import decode
 import re
+import time
 
 app = Flask(__name__)
 
 GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
 
-# Configura il percorso di Tesseract (necessario per Windows)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 
 def extract_isbn(image: np.ndarray) -> str:
     try:
@@ -58,22 +57,10 @@ def extract_isbn(image: np.ndarray) -> str:
             _, isbn_region = cv2.threshold(isbn_region, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
 
+            barcodes = decode(isbn_region)
+            for barcode in barcodes:
+                return barcode.data.decode()
 
-
-            #Il problema sono le righe che seguonio
-            # Configurazione Tesseract ottimizzata per ISBN
-            custom_config = '--psm 7 --oem 3'
-            extracted_text = pytesseract.image_to_string(isbn_region, config=custom_config)
-            print(extracted_text)
-            # Pulizia e validazione
-            isbn_text = re.sub(r'[^\d]', '', extracted_text)
-            
-            # Debug: stampa il testo estratto prima della pulizia
-            print(f"Testo estratto: {extracted_text}")
-            print(f"ISBN pulito: {isbn_text}")
-            
-            if len(isbn_text) in [10, 13]:
-                return isbn_text
         else:
             print("Nessun rettangolo valido trovato")
             return None
@@ -82,31 +69,82 @@ def extract_isbn(image: np.ndarray) -> str:
         print(f"Errore durante l'elaborazione: {str(e)}")
         return None
 
-def get_book_info(isbn: str):
-    response = requests.get(GOOGLE_BOOKS_API_URL + isbn)
-    if response.status_code != 200:
-        return None
-    data = response.json()
-    return data.get("items", [{}])[0].get("volumeInfo", {})
+def get_book_info_google(isbn):
+    url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        if "items" in data:
+            return data["items"][0]
+    return None
 
-@app.route("/upload/", methods=["POST"])
-def upload_image():
-    if "file" not in request.files:
-        return jsonify({"error": "Nessun file caricato"}), 400
+def get_book_info_openlibrary(isbn):
+    url = f"https://openlibrary.org/isbn/{isbn}.json"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def get_book_info_isbndb(isbn, api_key="YOUR_ISBNDB_API_KEY"):
+    url = f"https://api2.isbndb.com/book/{isbn}"
+    headers = {"Authorization": api_key}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def parse_book_info(isbn, book_data, source):
+    if source == "google":
+        volume_info = book_data.get("volumeInfo", {})
+        authors = volume_info.get("authors", [])
+        return {
+            "ISBN": isbn,
+            "titolo": volume_info.get("title", "Sconosciuto"),
+            "copertina": volume_info.get("imageLinks", {}).get("thumbnail", ""),
+            "Autori": [{"nome": a.split(" ")[0], "cognome": " ".join(a.split(" ")[1:])} for a in authors],
+            "genere": volume_info.get("categories", ["Sconosciuto"])[0]
+        }
+    elif source == "openlibrary":
+        return {
+            "ISBN": isbn,
+            "titolo": book_data.get("title", "Sconosciuto"),
+            "copertina": f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg",
+            "Autori": [{"nome": "", "cognome": a.get("name", "")} for a in book_data.get("authors", [])],
+            "genere": "Sconosciuto"
+        }
+    elif source == "isbndb":
+        book = book_data.get("book", {})
+        return {
+            "ISBN": isbn,
+            "titolo": book.get("title", "Sconosciuto"),
+            "copertina": book.get("image", ""),
+            "Autori": [{"nome": "", "cognome": book.get("authors", [""])[0]}],
+            "genere": book.get("subjects", ["Sconosciuto"])[0]
+        }
+    return None
+
+app = Flask(__name__)
+
+@app.route("/get_book_info", methods=["POST"])
+def get_book_info():
     
     file = request.files["file"]
     image_data = file.read()
     image = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
-    isbn = extract_isbn(image)
-    print(isbn)
-    if not isbn:
-        return jsonify({"error": "ISBN non riconosciuto o errore OCR"}), 400
+    start_time = time.time()
     
-    book_info = get_book_info(isbn)
-    if not book_info:
-        return jsonify({"error": "Errore nella chiamata a Google Books API"}), 500
+    while time.time() - start_time < 20:
+        isbn = extract_isbn(image)
+        if not isbn:
+            continue
+        
+        for api_func, source in [(get_book_info_google, "google"), (get_book_info_openlibrary, "openlibrary"), (get_book_info_isbndb, "isbndb")]:
+            book_data = api_func(isbn)
+            if book_data:
+                return jsonify(parse_book_info(isbn, book_data, source))
     
-    return jsonify({"isbn": isbn, "book_info": book_info})
+    return jsonify({"error": "ISBN non riconosciuto o libro non trovato nelle API"}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
+

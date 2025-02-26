@@ -14,6 +14,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recupera i dati dal form
+    $isbn = $conn->real_escape_string($_POST["isbn"]);
     $titolo = $conn->real_escape_string($_POST["title"]);
     $autore = $conn->real_escape_string($_POST["author"]);
     $genere = $conn->real_escape_string($_POST["genre"]);
@@ -47,11 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Query per inserire il libro
-    $sql = "INSERT INTO Libro (Titolo, Autore, Genere, Sede, Stato, AggiuntoDa, URLImg) 
-            VALUES ('$titolo', '$autore', '$genere', '$sede', '$stato', '$aggiuntoDa', '$copertina')";
+    $sql = "INSERT INTO Libro (ISBN, Titolo, Autore, Genere, Sede, Stato, AggiuntoDa, URLImg) 
+            VALUES ('$isbn','$titolo', '$autore', '$genere', '$sede', '$stato', '$aggiuntoDa', '$copertina')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Libro aggiunto con successo!'); window.location.href='index.php';</script>";
+        header("Location: index.php");
     } else {
         echo "Errore: " . $sql . "<br>" . $conn->error;
     }

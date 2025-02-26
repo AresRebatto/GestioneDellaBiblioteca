@@ -13,7 +13,10 @@ if ($conn->connect_error) {
 }
 
 // Query per ottenere i libri
-$sql = "SELECT * FROM Libro";
+$sql = "SELECT l.LibroId, l.ISBN, l.Titolo, l.Genere, l.Sede, l.Stato, GROUP_CONCAT(CONCAT(a.Nome, ' ', a.Cognome) SEPARATOR ', ') AS Autori FROM libro l
+        JOIN libro_autore la ON l.LibroId = la.LibroId
+        JOIN autore a ON la.AutoreId = a.AutoreId
+        GROUP BY l.LibroId;";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -25,8 +28,9 @@ $sql = "SELECT * FROM Libro";
             echo "
                 <tr class='text-center'>
                     <td class='p-2 border'>{$row["Titolo"]}</td>
-                    <td class='p-2 border'>{$row["Autore"]}</td>
+                    <td class='p-2 border'>{$row["Autori"]}</td>
                     <td class='p-2 border'>{$row["Genere"]}</td>
+                    <td class='p-2 border'>{$row["Sede"]}</td>
                     <td class='p-2 border $statoClasse'>{$row["Stato"]}</td>
                     <td class='p-2 border'>$button</td>
                 </tr>

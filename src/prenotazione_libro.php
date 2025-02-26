@@ -16,8 +16,16 @@ if ($conn->connect_error) {
 // Recupera l'ID del libro dalla query string
 $bookId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Recupera i dettagli del libro dal database
-$sql = "SELECT * FROM Libro WHERE LibroId = $bookId";
+// Recupera i dettagli del libro dal database insieme agli autori
+$sql = "
+    SELECT l.LibroId, l.ISBN, l.Titolo, l.Genere, l.Sede, l.Stato, l.URLImg, GROUP_CONCAT(CONCAT(a.Nome, ' ', a.Cognome) SEPARATOR ', ') AS Autori 
+    FROM libro l
+    JOIN libro_autore la ON l.LibroId = la.LibroId
+    JOIN autore a ON la.AutoreId = a.AutoreId
+    WHERE l.LibroId = $bookId
+    GROUP BY l.LibroId;
+";
+
 $result = $conn->query($sql);
 
 // Se il libro esiste, carica i dettagli
@@ -31,9 +39,9 @@ if ($result->num_rows > 0) {
 // Gestione della conferma della prenotazione
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Aggiorna lo stato del libro a "Non disponibile"
-    $updateSql = "UPDATE Libro SET Stato = 'Non disponibile' WHERE LibroId = $bookId";
+    $updateSql = "UPDATE Libro SET Stato = 'In prestito' WHERE LibroId = $bookId";
     if ($conn->query($updateSql) === TRUE) {
-        echo "<script>alert('Prenotazione confermata!'); window.location.href='index.php';</script>";
+        header("Location: index.php");
     } else {
         echo "Errore nell'aggiornamento dello stato: " . $conn->error;
     }
@@ -57,10 +65,10 @@ $conn->close();
 
         <!-- Info del libro -->
         <div class="flex items-center space-x-4 border-b pb-4">
-            <img src="<?php echo $book['URLImg'] ?: 'https://via.placeholder.com/80'; ?>" alt="Copertina libro" class="w-20 h-28 object-cover rounded-md shadow-md">
+            <img src="<?php echo !empty($book['URLImg']) ? $book['URLImg'] : 'https://via.placeholder.com/80'; ?>" alt="Copertina libro" class="w-20 h-28 object-cover rounded-md shadow-md">
             <div>
                 <h3 class="text-lg font-medium text-gray-900"><?php echo $book['Titolo']; ?></h3>
-                <p class="text-gray-600">di <span class="font-medium"><?php echo $book['Autore']; ?></span></p>
+                <p class="text-gray-600">di <span class="font-medium"><?php echo $book['Autori']; ?></span></p>
                 <p class="text-sm text-gray-500 mt-1">📅 Disponibile dal: <span class="font-semibold"><?php echo date("d M Y"); ?></span></p>
             </div>
         </div>

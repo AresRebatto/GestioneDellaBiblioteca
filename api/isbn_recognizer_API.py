@@ -127,14 +127,17 @@ app = Flask(__name__)
 
 @app.route("/get_book_info", methods=["POST"])
 def get_book_info():
-    
+
     file = request.files["file"]
     image_data = file.read()
     image = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
     start_time = time.time()
-    
+    isbn_riconosciuto = True
     while time.time() - start_time < 20:
         isbn = extract_isbn(image)
+        print(isbn)
+        if isbn is None:
+            isbn_riconosciuto = False
         if not isbn:
             continue
         
@@ -142,9 +145,30 @@ def get_book_info():
             book_data = api_func(isbn)
             if book_data:
                 return jsonify(parse_book_info(isbn, book_data, source))
-    
-    return jsonify({"error": "ISBN non riconosciuto o libro non trovato nelle API"}), 400
+    if not isbn_riconosciuto:
+        return jsonify({"error": "ISBN non riconosciuto"}), 400
+    return jsonify({"error": "ISBN non riconosciuto correttamente o libro non trovato nelle API"}), 400
 
+@app.route("/get_book_info_isbn", methods=["GET"])
+def get_book_info_isbn():
+    isbn = request.args.get("isbn")
+    print(isbn)
+
+    if not isbn:
+        return jsonify({"error": "ISBN mancante"}), 400  # Codice 400: Bad Request
+
+    sources = [
+        (get_book_info_google, "google"),
+        (get_book_info_openlibrary, "openlibrary"),
+        (get_book_info_isbndb, "isbndb")
+    ]
+
+    for api_func, source in sources:
+        book_data = api_func(isbn)
+        if book_data:
+            return jsonify(parse_book_info(isbn, book_data, source))
+
+    return jsonify({"error": "Nessuna informazione trovata per questo ISBN"}), 404  # Codice 404: Not Found
 if __name__ == "__main__":
     app.run(debug=True)
 

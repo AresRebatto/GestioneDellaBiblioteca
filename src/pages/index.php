@@ -58,7 +58,7 @@
         </table>
 
         <div class="flex justify-between items-center mb-4 mt-4">
-            <a href="inserimento_manuale.php"
+            <a href="inserimento_libro.php"
                 class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700">
                 ➕ Aggiungi Libro
             </a>

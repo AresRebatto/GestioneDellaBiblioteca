@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 26, 2025 alle 12:51
+-- Creato il: Mar 01, 2025 alle 11:13
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -76,16 +76,16 @@ CREATE TABLE `libro` (
 
 INSERT INTO `libro` (`LibroId`, `ISBN`, `Titolo`, `URLImg`, `Genere`, `Sede`, `Stato`, `AggiuntoDa`) VALUES
 (1, '978-88-04-46510-9', 'Il nome della rosa', 'https://m.media-amazon.com/images/I/61Aa9Yic8AL._AC_UL480_FMwebp_QL65_.jpg', 'Romanzo storico', 'Biblioteca Centrale', 'In prestito', 1),
-(2, '978-0-7475-3269-6', 'Harry Potter e la Pietra Filosofale', 'https://m.media-amazon.com/images/I/514dFN+-M+L._SY445_SX342_.jpg', 'Fantasy', 'Biblioteca Centrale', 'Disponibile', 2),
+(2, '978-0-7475-3269-6', 'Harry Potter e la Pietra Filosofale', 'https://m.media-amazon.com/images/I/514dFN+-M+L._SY445_SX342_.jpg', 'Fantasy', 'Biblioteca Centrale', 'In prestito', 2),
 (3, '978-0-452-28423-4', '1984', 'https://m.media-amazon.com/images/I/71GuYZ9CinL._AC_UL480_FMwebp_QL65_.jpg', 'Distopico', 'Biblioteca Sud', 'In prestito', 3),
-(4, '978-88-459-1725-0', 'Cent\'anni di solitudine', 'https://m.media-amazon.com/images/I/81nxsT-8NWS._AC_UL480_FMwebp_QL65_.jpg', 'Romanzo', 'Biblioteca Nord', 'Disponibile', 4),
+(4, '978-88-459-1725-0', 'Cent\'anni di solitudine', 'https://m.media-amazon.com/images/I/81nxsT-8NWS._AC_UL480_FMwebp_QL65_.jpg', 'Romanzo', 'Biblioteca Nord', 'In prestito', 4),
 (5, '978-88-459-1892-0', 'Il barone rampante', 'https://m.media-amazon.com/images/I/81XSDpDOEML._AC_UL480_FMwebp_QL65_.jpg', 'Narrativa', 'Biblioteca Ovest', 'Disponibile', 1),
 (6, '978-0-06-112008-4', 'Il buio oltre la siepe', 'https://m.media-amazon.com/images/I/713Q8cZg6KL._AC_UL480_FMwebp_QL65_.jpg', 'Romanzo', 'Biblioteca Est', 'Disponibile', 2),
 (7, '978-0-14-044913-6', 'Delitto e castigo', 'https://m.media-amazon.com/images/I/41wZo3XpVcL._SY445_SX342_.jpg', 'Classico', 'Biblioteca Centrale', 'Disponibile', 3),
 (8, '978-0-19-953556-9', 'Orgoglio e pregiudizio', 'https://m.media-amazon.com/images/I/81yX3cxZBhL._AC_UL480_FMwebp_QL65_.jpg', 'Romanzo', 'Biblioteca Nord', 'Disponibile', 4),
 (9, '978-0-06-085398-3', 'Buona Apocalisse a tutti!', 'https://m.media-amazon.com/images/I/81ZUaFvfpnL._AC_UL480_FMwebp_QL65_.jpg', 'Fantasy', 'Biblioteca Centrale', 'Disponibile', 5),
 (10, '978-1-5011-9752-7', 'Il Talismano', 'https://m.media-amazon.com/images/I/71xw9m8+uDL._AC_UL480_FMwebp_QL65_.jpg', 'Horror', 'Biblioteca Sud', 'Disponibile', 6),
-(11, '978-1-4555-9928-4', 'Relic', 'https://m.media-amazon.com/images/I/71VBtn7bD-L._AC_UL480_FMwebp_QL65_.jpg', 'Thriller', 'Biblioteca Ovest', 'Disponibile', 2);
+(11, '978-1-4555-9928-4', 'Relic', 'https://m.media-amazon.com/images/I/71VBtn7bD-L._AC_UL480_FMwebp_QL65_.jpg', 'Thriller', 'Biblioteca Ovest', 'In prestito', 2);
 
 -- --------------------------------------------------------
 
@@ -141,6 +141,19 @@ INSERT INTO `prestito` (`PrestitoId`, `DataRestituzione`, `NumeroProroghe`, `Lib
 (2, '2025-04-05', 1, 6, 2),
 (3, '2025-03-15', 0, 7, 3),
 (4, '2025-03-22', 2, 5, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `sessioni`
+--
+
+CREATE TABLE `sessioni` (
+  `SessioneId` int(11) NOT NULL,
+  `UtenteId` int(11) DEFAULT NULL,
+  `Token` varchar(255) DEFAULT NULL,
+  `Scadenza` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -205,6 +218,13 @@ ALTER TABLE `prestito`
   ADD KEY `UtenteId` (`UtenteId`);
 
 --
+-- Indici per le tabelle `sessioni`
+--
+ALTER TABLE `sessioni`
+  ADD PRIMARY KEY (`SessioneId`),
+  ADD KEY `UtenteId` (`UtenteId`);
+
+--
 -- Indici per le tabelle `utente`
 --
 ALTER TABLE `utente`
@@ -232,6 +252,12 @@ ALTER TABLE `libro`
 --
 ALTER TABLE `prestito`
   MODIFY `PrestitoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT per la tabella `sessioni`
+--
+ALTER TABLE `sessioni`
+  MODIFY `SessioneId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `utente`
@@ -262,6 +288,12 @@ ALTER TABLE `libro_autore`
 ALTER TABLE `prestito`
   ADD CONSTRAINT `prestito_ibfk_1` FOREIGN KEY (`LibroId`) REFERENCES `libro` (`LibroId`) ON DELETE CASCADE,
   ADD CONSTRAINT `prestito_ibfk_2` FOREIGN KEY (`UtenteId`) REFERENCES `utente` (`UtenteId`) ON DELETE CASCADE;
+
+--
+-- Limiti per la tabella `sessioni`
+--
+ALTER TABLE `sessioni`
+  ADD CONSTRAINT `sessioni_ibfk_1` FOREIGN KEY (`UtenteId`) REFERENCES `utente` (`UtenteId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

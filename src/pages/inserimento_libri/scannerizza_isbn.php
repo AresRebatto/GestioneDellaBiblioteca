@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carica Immagine</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body class="bg-gray-100 text-gray-900">
@@ -32,9 +33,13 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16V8a3 3 0 013-3h12a3 3 0 013 3v8m-4 4H7m4-12v6m0 0l-3-3m3 3l3-3"></path>
             </svg>
             <span class="text-sm">Scegli un file</span>
-            <input type="file" accept="image/*" capture="environment" class="hidden">
+            <input type="file" accept="image/*" capture="environment" class="hidden" id="fileInput">
         </label>
+
+        <p id="fileName" class="mt-4 text-gray-700"></p>
     </div>
+
+    <script src="../../js/api_call.js"></script>
 
 </body>
 

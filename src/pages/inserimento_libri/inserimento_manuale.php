@@ -13,7 +13,7 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Inserisci Manualmente il Libro</h2>
 
-        <form action="insert_book.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form action="../../helpers/insert_book.php" method="POST" enctype="multipart/form-data" class="space-y-4">
             <!-- ISBN -->
             <div>
                 <label class="block text-gray-700 font-medium">ISBN</label>
@@ -65,7 +65,7 @@
 
             <!-- Pulsante -->
             <div class="flex justify-center space-x-4 mt-4">
-                <button type="button" onclick="window.location.href='index.php'"
+                <button type="button" onclick="window.location.href='../index.php'"
                     class="px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 transition">
                     Annulla
                 </button>

@@ -3,7 +3,7 @@ session_start();
 
 // Controllo se l'utente è autenticato
 if (!isset($_SESSION["utente_id"])) {
-    header("Location: loginform.php");
+    header("Location: ../pages/loginform.php");
     exit();
 }
 
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
         // Controllo tipo file
-        $allowed_types = ["jpg", "jpeg", "png", "gif"];
+        $allowed_types = ["jpg", "jpeg", "png"];
         if (in_array($imageFileType, $allowed_types)) {
             if (move_uploaded_file($_FILES["cover"]["tmp_name"], $target_file)) {
                 $copertina = $target_file;

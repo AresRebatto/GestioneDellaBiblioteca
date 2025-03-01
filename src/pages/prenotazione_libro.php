@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Controllo se l'utente è autenticato
+if (!isset($_SESSION["utente_id"])) {
+    header("Location: loginform.php"); // Reindirizza alla pagina di login
+    exit();
+}
+
 // Connessione al database
 $servername = "localhost";
 $username = "root";
@@ -15,18 +23,23 @@ if ($conn->connect_error) {
 
 // Recupera l'ID del libro dalla query string
 $bookId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$utenteId = $_SESSION["utente_id"]; // Recupera l'ID dell'utente autenticato
 
 // Recupera i dettagli del libro dal database insieme agli autori
 $sql = "
-    SELECT l.LibroId, l.ISBN, l.Titolo, l.Genere, l.Sede, l.Stato, l.URLImg, GROUP_CONCAT(CONCAT(a.Nome, ' ', a.Cognome) SEPARATOR ', ') AS Autori 
+    SELECT l.LibroId, l.ISBN, l.Titolo, l.Genere, l.Sede, l.Stato, l.URLImg, 
+           GROUP_CONCAT(CONCAT(a.Nome, ' ', a.Cognome) SEPARATOR ', ') AS Autori 
     FROM libro l
     JOIN libro_autore la ON l.LibroId = la.LibroId
     JOIN autore a ON la.AutoreId = a.AutoreId
-    WHERE l.LibroId = $bookId
+    WHERE l.LibroId = ?
     GROUP BY l.LibroId;
 ";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $bookId);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Se il libro esiste, carica i dettagli
 if ($result->num_rows > 0) {
@@ -38,17 +51,34 @@ if ($result->num_rows > 0) {
 
 // Gestione della conferma della prenotazione
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Aggiorna lo stato del libro a "Non disponibile"
-    $updateSql = "UPDATE Libro SET Stato = 'In prestito' WHERE LibroId = $bookId";
-    if ($conn->query($updateSql) === TRUE) {
+    // Controlla se il libro è già in prestito
+    if ($book['Stato'] === 'In prestito') {
+        echo "Il libro è già in prestito.";
+        exit;
+    }
+
+    // Inserisce la prenotazione nella tabella Prenotazione
+    $insertSql = "INSERT INTO Prestito (UtenteId, LibroId, DataRestituzione) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 MONTH))";
+    $stmt = $conn->prepare($insertSql);
+    $stmt->bind_param("ii", $utenteId, $bookId);
+
+    if ($stmt->execute()) {
+        // Aggiorna lo stato del libro a "In prestito"
+        $updateSql = "UPDATE Libro SET Stato = 'In prestito' WHERE LibroId = ?";
+        $stmt = $conn->prepare($updateSql);
+        $stmt->bind_param("i", $bookId);
+        $stmt->execute();
+
         header("Location: index.php");
+        exit();
     } else {
-        echo "Errore nell'aggiornamento dello stato: " . $conn->error;
+        echo "Errore nella prenotazione: " . $conn->error;
     }
 }
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="it">

@@ -14,7 +14,7 @@
             <p class="text-red-500 text-sm mb-4"><?php echo htmlspecialchars($_GET['errore']); ?></p>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" class="space-y-4">
+        <form action="../helpers/login.php" method="POST" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Email:</label>
                 <input type="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg">

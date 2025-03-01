@@ -9,7 +9,6 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900">
-
     <!-- Navbar -->
     <nav class="bg-blue-600 p-4 text-white">
         <div class="container mx-auto flex justify-between items-center">
@@ -53,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php include 'get_libri.php'; ?> <!-- Inclusione dati -->
+                <?php include '../helpers/get_libri.php'; ?> <!-- Inclusione dati -->
             </tbody>
         </table>
 

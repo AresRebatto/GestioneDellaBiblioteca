@@ -10,7 +10,7 @@
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold text-center mb-6">Registrati</h2>
 
-        <form action="register.php" method="POST" class="space-y-4">
+        <form action="../helpers/register.php" method="POST" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Nome:</label>
                 <input type="text" name="nome" required class="w-full p-2 border border-gray-300 rounded-lg">

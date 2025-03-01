@@ -36,25 +36,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Connessione con PDO per la gestione delle sessioni
             try {
-                $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password, [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-                ]);
-
-                // Debug: Verifica la connessione
-                error_log("Connessione PDO riuscita");
-
+                
                 // Salva il token nel database con scadenza di 1 giorno e 1 ora (25 ore)
-                $stmt = $pdo->prepare("INSERT INTO Sessioni (UtenteId, Token, Scadenza) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 25 HOUR))");
+                $stmt = $conn->prepare("INSERT INTO Sessioni (UtenteId, Token, Scadenza) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 25 HOUR))");
                 $stmt->execute([$user["UtenteId"], $token]);
-
-                // Debug: Verifica se l'insert è andato a buon fine
-                error_log("Token salvato per l'utente ID: " . $user["UtenteId"]);
 
                 // Imposta il cookie con il token (HTTPOnly e Secure)
                 setcookie("session_token", $token, time() + (3600 * 25), "/", "", true, true);
 
                 // Reindirizza alla homepage
-                header("Location: index.php");
+                header("Location: ../pages/index.php");
+                
                 exit();
             } catch (PDOException $e) {
                 error_log("Errore PDO: " . $e->getMessage()); // Log dell'errore

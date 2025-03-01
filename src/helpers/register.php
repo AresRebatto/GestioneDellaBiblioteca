@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->num_rows > 0) {
         $errore = "Email già registrata!";
-        header("Location: registerform.php?errore=" . urlencode($errore));
+        header("Location: ../pages/registerform.php?errore=" . urlencode($errore));
         exit();
     }
 
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssss", $nome, $cognome, $email, $classe, $password);
 
     if ($stmt->execute()) {
-        header("Location: loginform.php?successo=Registrazione completata!");
+        header("Location: ../pages/loginform.php?successo=Registrazione completata!");
         exit();
     } else {
         $errore = "Errore durante la registrazione.";
@@ -50,6 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Reindirizza con errore se qualcosa va storto
-header("Location: register-form.php?errore=" . urlencode($errore));
+header("Location: ../pages/registerform.php?errore=" . urlencode($errore));
 exit();
 ?>

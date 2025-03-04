@@ -5,11 +5,12 @@ import requests
 from pyzbar.pyzbar import decode
 import re
 import time
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
-
 
 
 def extract_isbn(image: np.ndarray) -> str:
@@ -102,7 +103,8 @@ def parse_book_info(isbn, book_data, source):
             "titolo": volume_info.get("title", "Sconosciuto"),
             "copertina": volume_info.get("imageLinks", {}).get("thumbnail", ""),
             "Autori": [{"nome": a.split(" ")[0], "cognome": " ".join(a.split(" ")[1:])} for a in authors],
-            "genere": volume_info.get("categories", ["Sconosciuto"])[0]
+            "genere": volume_info.get("categories", ["Sconosciuto"])[0],
+            "anno" : volume_info.get("publishedDate", "Sconosciuto")
         }
     elif source == "openlibrary":
         return {
@@ -110,7 +112,8 @@ def parse_book_info(isbn, book_data, source):
             "titolo": book_data.get("title", "Sconosciuto"),
             "copertina": f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg",
             "Autori": [{"nome": "", "cognome": a.get("name", "")} for a in book_data.get("authors", [])],
-            "genere": "Sconosciuto"
+            "genere": "Sconosciuto",
+            "anno" : book_data.get("publish_date", "Sconosciuto")
         }
     elif source == "isbndb":
         book = book_data.get("book", {})
@@ -119,20 +122,26 @@ def parse_book_info(isbn, book_data, source):
             "titolo": book.get("title", "Sconosciuto"),
             "copertina": book.get("image", ""),
             "Autori": [{"nome": "", "cognome": book.get("authors", [""])[0]}],
-            "genere": book.get("subjects", ["Sconosciuto"])[0]
+            "genere": book.get("subjects", ["Sconosciuto"])[0],
+            "anno" : book.get("publish_date", "Sconosciuto")
         }
     return None
 
-app = Flask(__name__)
 
 @app.route("/get_book_info", methods=["POST"])
 def get_book_info():
+    print("Collegamento avvenuto con successo")
+    if "file" not in request.files:
+        return jsonify({"error": "File mancante"}), 400
 
     file = request.files["file"]
+
+    
     image_data = file.read()
     image = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
     start_time = time.time()
     isbn_riconosciuto = True
+
     while time.time() - start_time < 20:
         isbn = extract_isbn(image)
         print(isbn)

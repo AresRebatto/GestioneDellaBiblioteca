@@ -1,3 +1,4 @@
+<?php include "../helpers/verificasessione.php"; ?>
 <!DOCTYPE html>
 <html lang="it">
 

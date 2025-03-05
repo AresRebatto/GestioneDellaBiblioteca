@@ -199,7 +199,6 @@ ALTER TABLE `autore`
 --
 ALTER TABLE `libro`
   ADD PRIMARY KEY (`LibroId`),
-  ADD UNIQUE KEY `ISBN` (`ISBN`),
   ADD KEY `AggiuntoDa` (`AggiuntoDa`);
 
 --

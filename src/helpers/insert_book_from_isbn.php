@@ -24,47 +24,49 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Recupera i dati dal corpo della richiesta
-    $data = json_decode(file_get_contents("php://input"), true);
-    
-    $isbn = $conn->real_escape_string($data["ISBN"]);
-    $titolo = $conn->real_escape_string($data["titolo"]);
-    $autore = $conn->real_escape_string($data["Autori"][0]["nome"] . " " . $conn->real_escape_string($data["Autori"][0]["cognome"]));
-    $genere = $conn->real_escape_string($data["genere"]);
+    // Recupera i dati dal form
+    $data = json_decode(file_get_contents("php://input"), true);    
+    $isbn = $data["ISBN"];
     $anno = intval($data["anno"]);
-    $sede = $conn->real_escape_string($data["sede"]);
+    $autori = $data["autori"];
+    $copertina = $data["copertina"];
+    $genere = $data["genere"];
+    $titolo = $data["titolo"];
+    $sede = $data["sede"];
+
     $stato = "Disponibile"; // Il libro è disponibile di default
+    
     $aggiuntoDa = $_SESSION["utente_id"]; // ID utente che aggiunge il libro
-    $copertina = $conn->real_escape_string($data["copertina"]);
+    
+    $id_autori = [];
 
-    // Separare il nome e il cognome dell'autore
-    $autore_parts = explode(" ", trim($autore));
-    $nome_autore = $conn->real_escape_string($autore_parts[0]);
-    $cognome_autore = isset($autore_parts[1]) ? $conn->real_escape_string($autore_parts[1]) : '';
+    foreach ($autori as $autore) {
+        // Controllare se l'autore esiste già
+        $sql_autore = "SELECT AutoreId FROM Autore WHERE Nome = ? AND Cognome = ?";
+        $stmt = $conn->prepare($sql_autore);
+        $stmt->bind_param("ss", $autore["nome"], $autore["cognome"]);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    // Controllare se l'autore esiste già
-    $sql_check_autore = "SELECT AutoreId FROM Autore WHERE Nome = ? AND Cognome = ?";
-    $stmt = $conn->prepare($sql_check_autore);
-    $stmt->bind_param("ss", $nome_autore, $cognome_autore);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // Autore già presente, recupera il suo ID
-        $row = $result->fetch_assoc();
-        $autore_id = $row["AutoreId"];
-    } else {
-        // Inserisci il nuovo autore
-        $sql_insert_autore = "INSERT INTO Autore (Nome, Cognome) VALUES (?, ?)";
-        $stmt = $conn->prepare($sql_insert_autore);
-        $stmt->bind_param("ss", $nome_autore, $cognome_autore);
-        if ($stmt->execute()) {
-            $autore_id = $stmt->insert_id;
+        if ($result->num_rows > 0) {
+            // Autore già presente, recupera il suo ID
+            $row = $result->fetch_assoc();
+            $id_autori[] = $row["AutoreId"];
         } else {
-            echo "Errore nell'inserimento dell'autore: " . $conn->error;
-            exit();
+            // Inserisci il nuovo autore
+            $sql_insert_autore = "INSERT INTO Autore (Nome, Cognome) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql_insert_autore);
+            $stmt->bind_param("ss", $autore["nome"], $autore["cognome"]);
+            
+            if ($stmt->execute()) {
+                $id_autori[] = $stmt->insert_id;
+            } else {
+                echo "Errore nell'inserimento dell'autore: " . $conn->error;
+                exit();
+            }
         }
     }
+    
 
     // Inserire il libro
     $sql_libro = "INSERT INTO Libro (ISBN, Titolo, Genere, Sede, Stato, AggiuntoDa, URLImg) 
@@ -76,14 +78,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $libro_id = $stmt->insert_id;
 
         // Associare il libro all'autore nella tabella libro_autore
-        $sql_associazione = "INSERT INTO libro_autore (LibroId, AutoreId) VALUES (?, ?)";
-        $stmt = $conn->prepare($sql_associazione);
-        $stmt->bind_param("ii", $libro_id, $autore_id);
-        $stmt->execute();
-
-        echo "200";
+        foreach($id_autori as $autore_id) {
+            $sql_associazione = "INSERT INTO libro_autore (LibroId, AutoreId) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql_associazione);
+            $stmt->bind_param("ii", $libro_id, $autore_id);
+            $stmt->execute();
+        }
+        echo json_encode(["message" => "success"]);
+        
+        exit();
     } else {
-        echo "Errore: " . $conn->error;
+        echo "Errore: " . $sql_libro . "<br>" . $conn->error;
     }
 }
 

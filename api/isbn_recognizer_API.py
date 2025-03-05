@@ -102,7 +102,7 @@ def parse_book_info(isbn, book_data, source):
             "ISBN": isbn,
             "titolo": volume_info.get("title", "Sconosciuto"),
             "copertina": volume_info.get("imageLinks", {}).get("thumbnail", ""),
-            "Autori": [{"nome": a.split(" ")[0], "cognome": " ".join(a.split(" ")[1:])} for a in authors],
+            "autori": [{"nome": a.split(" ")[0], "cognome": " ".join(a.split(" ")[1:])} for a in authors],
             "genere": volume_info.get("categories", ["Sconosciuto"])[0],
             "anno" : volume_info.get("publishedDate", "Sconosciuto")
         }
@@ -111,7 +111,7 @@ def parse_book_info(isbn, book_data, source):
             "ISBN": isbn,
             "titolo": book_data.get("title", "Sconosciuto"),
             "copertina": f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg",
-            "Autori": [{"nome": "", "cognome": a.get("name", "")} for a in book_data.get("authors", [])],
+            "autori": [{"nome": "", "cognome": a.get("name", "")} for a in book_data.get("authors", [])],
             "genere": "Sconosciuto",
             "anno" : book_data.get("publish_date", "Sconosciuto")
         }
@@ -121,7 +121,7 @@ def parse_book_info(isbn, book_data, source):
             "ISBN": isbn,
             "titolo": book.get("title", "Sconosciuto"),
             "copertina": book.get("image", ""),
-            "Autori": [{"nome": "", "cognome": book.get("authors", [""])[0]}],
+            "autori": [{"nome": "", "cognome": book.get("authors", [""])[0]}],
             "genere": book.get("subjects", ["Sconosciuto"])[0],
             "anno" : book.get("publish_date", "Sconosciuto")
         }

@@ -1,10 +1,8 @@
+<?php include "../helpers/verificasessione.php"; ?>
 <?php
-session_start();
-
-// Controllo se l'utente è autenticato
-if (!isset($_SESSION["utente_id"])) {
-    header("Location: loginform.php"); // Reindirizza alla pagina di login
-    exit();
+// Verifica se la sessione è già avviata
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();  // Avvia la sessione se non è già iniziata
 }
 
 // Connessione al database
@@ -78,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="it">

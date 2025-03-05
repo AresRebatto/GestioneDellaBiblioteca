@@ -56,9 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Imposta il cookie con il token (HTTPOnly e Secure)
             setcookie("session_token", $token, time() + (3600 * 25), "/", "", true, true);
-
+            $urlLocation = isset($_COOKIE["urlpagina"]) ? urldecode($_COOKIE["urlpagina"]) : "/GestioneDellaBiblioteca/src/pages/index.php";
             // Reindirizza alla homepage
-            header("Location: ../pages/index.php");
+            header("Location: " . $urlLocation);
             exit();
         } else {
             $errore = "Password errata!";

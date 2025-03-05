@@ -55,8 +55,7 @@
 
         <!-- Pulsante Aggiungi Libro -->
         <div class="flex justify-center md:justify-start mt-4">
-            <a href="inserimento_libro.php"
-                class="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700">
+            <a href="inserimento_libro.php" class="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700">
                 ➕ Aggiungi Libro
             </a>
         </div>

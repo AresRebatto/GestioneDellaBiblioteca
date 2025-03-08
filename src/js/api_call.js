@@ -33,12 +33,12 @@ function handleFile(file) {
                 sede: $("#sede").val(),
             }),
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "*/*"
             }
         })
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
-            if (data.status === "success") {
+            if (data.message == "success") {
                 window.location.assign("../inserimento/inserimento_successo.php");
             } else {
                 window.location.assign("../inserimento/inserimento_fallito.php");

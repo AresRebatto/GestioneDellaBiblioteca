@@ -1,4 +1,13 @@
 <?php include "../helpers/verificasessione.php"; ?>
+<?php
+// Inizia la sessione solo se non è già stata avviata
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Controlla se l'utente è loggato tramite il cookie session_token
+$loggedIn = isset($_COOKIE["session_token"]) && isset($_SESSION["nome"]) && isset($_SESSION["cognome"]);
+?>
 <!DOCTYPE html>
 <html lang="it">
 
@@ -13,11 +22,26 @@
 
     <!-- Navbar -->
     <nav class="bg-blue-600 p-4 text-white">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <h1 class="text-xl font-bold">📚 Biblioteca ITTS Rimini "O. Belluzi - L. Da Vinci"</h1>
-            </div>
-            <a href="loginform.php" class="hover:underline">Login</a>
+        <div class="container mx-auto flex flex-wrap justify-between items-center">
+            <h1 class="text-lg font-bold">📚 Biblioteca ITTS Rimini "O. Belluzzi - L. Da Vinci"</h1>
+
+            <?php if ($loggedIn): ?>
+                <div class="flex items-center space-x-4">
+                    <!-- Link al profilo con nome e cognome -->
+                    <a href="profilo.php" class="hover:underline font-medium">
+                        <?php echo $_SESSION["nome"] . " " . $_SESSION["cognome"]; ?>
+                    </a>
+
+                    <!-- Icona di logout -->
+                    <form method="POST" action="../helpers/logout.php">
+                        <button type="submit" class="text-red-400 hover:text-red-600">
+                            🔴 Esci
+                        </button>
+                    </form>
+                </div>
+            <?php else: ?>
+                <a href="loginform.php" class="hover:underline">Login</a>
+            <?php endif; ?>
         </div>
     </nav>
 

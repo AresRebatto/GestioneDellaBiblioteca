@@ -95,21 +95,23 @@ $conn->close();
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php foreach ($libri_prestito as $libro): ?>
-                    <div class="bg-gray-50 p-4 rounded-xl shadow-md hover:shadow-lg transition ease-in-out duration-200">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Colonna immagine -->
-                            <div class="flex justify-center">
-                                <img src="<?php echo !empty($libro['URLImg']) ? $libro['URLImg'] : 'https://via.placeholder.com/150'; ?>" 
-                                     alt="Copertina libro" class="w-full h-48 object-contain rounded-lg">
-                            </div>
-                            <!-- Colonna informazioni libro -->
-                            <div class="flex flex-col justify-between">
-                                <h3 class="text-lg font-semibold text-gray-800"><?php echo $libro['Titolo']; ?></h3>
-                                <p class="text-sm text-gray-600 mt-2">Autori: <?php echo $libro['Autori']; ?></p>
-                                <p class="text-sm text-gray-500">📅 Restituzione entro: <br><span class="font-semibold"><?php echo date("d M Y", strtotime($libro['DataRestituzione'])); ?></span></p>
+                    <a href="dettagli_prestito.php?libro_id=<?php echo $libro['LibroId']; ?>" class="block">
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-md hover:shadow-lg hover:bg-blue-50 transition ease-in-out duration-200">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Colonna immagine -->
+                                <div class="flex justify-center">
+                                    <img src="<?php echo !empty($libro['URLImg']) ? $libro['URLImg'] : 'https://via.placeholder.com/150'; ?>" 
+                                         alt="Copertina libro" class="w-full h-48 object-contain rounded-lg">
+                                </div>
+                                <!-- Colonna informazioni libro -->
+                                <div class="flex flex-col justify-between">
+                                    <h3 class="text-lg font-semibold text-gray-800"><?php echo $libro['Titolo']; ?></h3>
+                                    <p class="text-sm text-gray-600 mt-2">Autori: <?php echo $libro['Autori']; ?></p>
+                                    <p class="text-sm text-gray-500">📅 Restituzione entro: <br><span class="font-semibold"><?php echo date("d M Y", strtotime($libro['DataRestituzione'])); ?></span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>

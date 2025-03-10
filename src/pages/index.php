@@ -15,7 +15,14 @@ $loggedIn = isset($_COOKIE["session_token"]) && isset($_SESSION["nome"]) && isse
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogo Libri</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+     <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
 
 <body class="bg-gray-100 text-gray-900">
@@ -53,7 +60,7 @@ $loggedIn = isset($_COOKIE["session_token"]) && isset($_SESSION["nome"]) && isse
 
         <!-- Barra di ricerca -->
         <form action="catalogo.php" method="GET" class="flex flex-col md:flex-row mb-4 gap-2">
-            <input type="text" name="query" placeholder="Cerca un libro..."
+            <input id="search" type="text" name="query" placeholder="Cerca un libro..."
                 class="w-full md:w-3/4 px-2 py-2 border rounded-md text-sm" required>
             <button type="submit"
                 class="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
@@ -88,6 +95,7 @@ $loggedIn = isset($_COOKIE["session_token"]) && isset($_SESSION["nome"]) && isse
             </a>
         </div>
     </div>
+    <script src="../js/autocomplete.js"></script>
 </body>
 
 </html>

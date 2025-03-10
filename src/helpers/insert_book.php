@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $autore = $conn->real_escape_string($_POST["author"]); // Nome e Cognome dell'autore
     $genere = $conn->real_escape_string($_POST["genre"]);
     $anno = intval($_POST["year"]);
-    $sede = $conn->real_escape_string($_POST["location"]);
+    $sede = $conn->real_escape_string($_POST["sede"]);
     $stato = "Disponibile"; // Il libro è disponibile di default
     $aggiuntoDa = $_SESSION["utente_id"]; // ID utente che aggiunge il libro
 

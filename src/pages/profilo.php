@@ -68,7 +68,9 @@ $conn->close();
 
     <!-- Navbar -->
     <nav class="bg-blue-700 p-4 text-white flex justify-between items-center shadow-lg">
-        <h1 class="text-2xl font-semibold">📚 Biblioteca ITTS Rimini</h1>
+        <a href="index.php">
+            <h1 class="text-xl font-bold">📚 Biblioteca ITTS Rimini "O. Belluzi - L. Da Vinci"</h1>
+        </a>
         <div class="flex items-center space-x-4">
             <a href="index.php" class="font-medium hover:underline">🏠 Home</a>
             <form action="../helpers/logout.php" method="POST">

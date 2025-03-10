@@ -23,7 +23,9 @@ $loggedIn = isset($_COOKIE["session_token"]) && isset($_SESSION["nome"]) && isse
     <!-- Navbar -->
     <nav class="bg-blue-600 p-4 text-white">
         <div class="container mx-auto flex flex-wrap justify-between items-center">
-            <h1 class="text-lg font-bold">📚 Biblioteca ITTS Rimini "O. Belluzzi - L. Da Vinci"</h1>
+                <a href="index.php">
+                    <h1 class="text-xl font-bold">📚 Biblioteca ITTS Rimini "O. Belluzi - L. Da Vinci"</h1>
+                </a>
 
             <?php if ($loggedIn): ?>
                 <div class="flex items-center space-x-4">

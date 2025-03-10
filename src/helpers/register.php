@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cognome = trim($_POST["cognome"]);
     $email = trim($_POST["email"]);
     $classe = trim($_POST["classe"]);
-    $password = trim($_POST["password"]);
+    $password = hash('sha256', trim($_POST["password"]));
 
     if ($conn->connect_error) {
         die("Connessione fallita: " . $conn->connect_error);

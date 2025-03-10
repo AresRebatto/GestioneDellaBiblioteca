@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"]);
-    $password = trim($_POST["password"]);
+    $password = hash('sha256', trim($_POST["password"]));
 
     // Query per verificare le credenziali
     $sql = "SELECT UtenteId, Nome, Cognome, Password FROM utente WHERE Email = ?";

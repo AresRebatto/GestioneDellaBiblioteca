@@ -10,7 +10,7 @@ $(document).ready(function() {
 function handleFile(file) {
     let formData = new FormData();
     formData.append("file", file);
-
+    $("#loadingSpinner").removeClass("hidden");
     fetch("http://127.0.0.1:5000/get_book_info", {
         method: "POST",
         body: formData,
@@ -38,8 +38,9 @@ function handleFile(file) {
         })
         .then(response => response.text())
         .then(data => {
-            if (data['message'] == "success") {
-                window.location.assign("../inserimento_libri/inserimento_successo.php");
+            if (data == "OK") {
+                $("#loadingSpinner").addClass("hidden");
+                window.location.assign("../inserimento_libri/inserimento_riuscito.php");
             } else {
                 window.location.assign("../inserimento_libri/inserimento_fallito.php");
             }

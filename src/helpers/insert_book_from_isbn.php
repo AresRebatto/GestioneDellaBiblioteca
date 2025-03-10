@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("ii", $libro_id, $autore_id);
             $stmt->execute();
         }
-        echo json_encode(["message" => "success"]);
+        echo "OK";
         
         exit();
     } else {

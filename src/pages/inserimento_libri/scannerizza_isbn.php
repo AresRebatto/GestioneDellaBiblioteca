@@ -47,6 +47,12 @@
 
     <script src="../../js/api_call.js"></script>
 
+    
+    <!-- Spinner di caricamento -->
+    <div id="loadingSpinner" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600"></div>
+    </div>
+
 </body>
 
 </html>

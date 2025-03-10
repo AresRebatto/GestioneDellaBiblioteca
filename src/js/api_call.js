@@ -20,7 +20,7 @@ function handleFile(file) {
     })
     .then(response => {
         if (!response.ok) {
-            window.location.assign("../inserimento/inserimento_fallito.php");
+            window.location.assign("../inserimento_libri/inserimento_fallito.php");
         }
         return response.json();
     })
@@ -38,10 +38,10 @@ function handleFile(file) {
         })
         .then(response => response.text())
         .then(data => {
-            if (data.message == "success") {
-                window.location.assign("../inserimento/inserimento_successo.php");
+            if (data['message'] == "success") {
+                window.location.assign("../inserimento_libri/inserimento_successo.php");
             } else {
-                window.location.assign("../inserimento/inserimento_fallito.php");
+                window.location.assign("../inserimento_libri/inserimento_fallito.php");
             }
         })
     })

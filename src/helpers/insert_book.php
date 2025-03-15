@@ -2,10 +2,7 @@
 session_start();
 
 // Controllo se l'utente è autenticato
-if (!isset($_SESSION["utente_id"])) {
-    header("Location: ../pages/loginform.php");
-    exit();
-}
+include "verificasessione.php"; 
 
 $servername = "localhost";
 $username = "root";

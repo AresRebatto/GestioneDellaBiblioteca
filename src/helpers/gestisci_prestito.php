@@ -9,9 +9,7 @@ $dbname = "biblioteca";     // Nome del database
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verifica autenticazione
-if (!isset($_SESSION['utente_id'])) {
-    die("Errore: utente non autenticato.");
-}
+include "verificasessione.php";
 
 $utenteId = $_SESSION['utente_id']; // ID utente dalla sessione
 

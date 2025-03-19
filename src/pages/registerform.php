@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
@@ -21,7 +27,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Email:</label>
-                <input type="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg">
+                <input type="email" name="email" id="email" required class="w-full p-2 border border-gray-300 rounded-lg">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Classe:</label>
@@ -31,7 +37,7 @@
                 <label class="block text-sm font-medium text-gray-700">Password:</label>
                 <input type="password" name="password" required class="w-full p-2 border border-gray-300 rounded-lg">
             </div>
-            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
+            <button type="submit" id="invio" class="w-full bg-green-500 text-white p-2 rounded-lg hover:bg-green-600">
                 Registrati
             </button>
         </form>
@@ -40,5 +46,6 @@
             Hai già un account? <a href="loginform.php" class="text-blue-500 hover:underline">Accedi</a>
         </p>
     </div>
+    <script src="../js/verifica_email.js"></script>
 </body>
 </html>
